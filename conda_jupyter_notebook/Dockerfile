@@ -1,4 +1,4 @@
-FROM continuumio/miniconda:4.7.12
+FROM continuumio/miniconda3:4.7.12
 
 # https://askubuntu.com/questions/141928/what-is-the-difference-between-bin-sh-and-bin-bash
 # bash has more functionality than bin, such as "source"
@@ -6,7 +6,7 @@ SHELL [ "/bin/bash", "--login", "-c" ]
 
 # Must match conda location in base Dockerfile:
 # https://github.com/ContinuumIO/docker-images/blob/master/miniconda/debian/Dockerfile
-ENV CONDA_DIR opt/conda
+ENV CONDA_DIR /opt/conda
 
 # make non-activate conda commands available
 ENV PATH $CONDA_DIR/bin:$PATH
@@ -31,14 +31,21 @@ COPY ./conda_jupyter_notebook/environment.yml ./environment.yml
 
 # make conda activate command for $ENV_PREFIX environment available from /bin/bash --interactive shells
 RUN echo "source activate $ENV_NAME" > ~/.bashrc
-# RUN echo "pushd $CONDA_DIR/bin && source activate $ENV_NAME && popd" > ~/.bashrc
 
-ENV PATH /opt/conda/envs/$ENV_NAME/bin:$PATH
+ENV PATH $CONDA_DIR/envs/$ENV_NAME/bin:$PATH
 
 RUN conda update --name base --channel defaults conda && \
     conda env update -n $ENV_NAME --file ./environment.yml && \
     conda activate $ENV_NAME && \
     conda clean --all --yes
+
+# RUN ls $CONDA_DIR/bin
+RUN touch ~/.bashrc
+RUN echo "source $CONDA_DIR/bin/activate $ENV_NAME" > ~/.bashrc
+RUN conda init bash
+# https://stackoverflow.com/questions/54429210/how-do-i-prevent-conda-from-activating-the-base-environment-by-default
+RUN conda config --set auto_activate_base false
+RUN cat ~/.bashrc
 
 COPY . .
 
@@ -50,6 +57,6 @@ ARG JUPYTER_PASSWORD_SHA
 # Use ARG at container run time
 ENV JUPYTER_PASSWORD_SHA $JUPYTER_PASSWORD_SHA
 
-CMD ["bash", "-c", "jupyter notebook --ip 0.0.0.0 --allow-root \
+CMD ["bash", "-c", "source ~/.bashrc && conda activate $ENV_NAME && jupyter notebook --ip 0.0.0.0 --allow-root \
 --notebook-dir /home/jovyan/work"]
 # --NotebookApp.password=$JUPYTER_PASSWORD_SHA"]

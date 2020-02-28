@@ -9,6 +9,7 @@ dependencies:
   - python=3.6
   - pandas
   - pip
+  - nb_conda
   - numpy
   - scikit-learn>=0.22.0
   - pip:
