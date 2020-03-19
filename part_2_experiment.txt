@@ -4,4 +4,4 @@
 
 The experiment would be an A/B test with create a control and experimental cohort of drivers. Cohorts would be balanced across driver engagement (active in the past few days vs. few weeks), driver demographics that are known to influence driver behavior, and any other relevant facets. For example, perhaps there are different cohorts of drivers that prefer to drive longer distances or shorter distances. The control group would get a simple encouragement to drive in both cities. The experimental cohort would be informed that their tolls will be reimbursed when traveling between cities. 
 
-TODO - experiment design of statistical test, and interpretation
+Bayesian A/B testing would be used to be able to spot meaningful differences between the groups without having to explicitly set the sample size, and to avoid a spurious result due to multiple hypothesis testing. 

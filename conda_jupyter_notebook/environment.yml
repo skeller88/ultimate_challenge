@@ -17,6 +17,8 @@ dependencies:
     - hyperopt
     - lightgbm
     - requests
+    - rfpimp
     - seaborn
+    - shap
     - xgboost
     - tpot

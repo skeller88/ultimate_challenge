@@ -52,11 +52,10 @@ COPY . .
 # Allow python to discover modules
 ENV PYTHONPATH "${PYTHONPATH}:/app"
 
+# Set default JUPYTER_PASSWORD_SHA at build time https://vsupalov.com/docker-arg-vs-env/
+ARG jupyter_password_sha_build_arg
 # Password to login to the jupyter notebook
-ARG JUPYTER_PASSWORD_SHA
-# Use ARG at container run time
-ENV JUPYTER_PASSWORD_SHA $JUPYTER_PASSWORD_SHA
+ENV JUPYTER_PASSWORD_SHA $jupyter_password_sha_build_arg
 
 CMD ["bash", "-c", "source ~/.bashrc && conda activate $ENV_NAME && jupyter notebook --ip 0.0.0.0 --allow-root \
---notebook-dir /home/jovyan/work"]
-# --NotebookApp.password=$JUPYTER_PASSWORD_SHA"]
+--notebook-dir /home/jovyan/work --NotebookApp.password=$JUPYTER_PASSWORD_SHA"]
